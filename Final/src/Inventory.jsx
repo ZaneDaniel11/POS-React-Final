@@ -13,7 +13,12 @@ export default function Inventory() {
     update: false,
     delete: false,
   });
-  const [product, setAddProducts] = useState({ Name: "", sku: "", price: "" });
+  const [product, setAddProducts] = useState({
+    Name: "",
+    sku: "",
+    price: "",
+    quantity: "", // Added quantity field
+  });
 
   const API_URL = "http://localhost:5211/api/ProductApi";
 
@@ -24,6 +29,7 @@ export default function Inventory() {
       name: product.Name,
       sku: product.sku,
       price: product.price,
+      quantity: product.quantity, // Added quantity field
     });
     toggleModal("add");
     getProducts();
@@ -37,6 +43,7 @@ export default function Inventory() {
         name: product.Name,
         sku: product.sku,
         price: product.price,
+        quantity: product.quantity, // Added quantity field
       });
       getProducts();
       toggleModal("update");
@@ -67,7 +74,7 @@ export default function Inventory() {
         );
         console.log("Delete response:", response);
         getProducts();
-        toggleModal("delete"); // Close the modal after deleting the product
+        toggleModal("delete");
       } catch (error) {
         console.error("Failed to delete product:", error);
         alert(`Failed to delete product. Error: ${error.message}`);
@@ -86,9 +93,14 @@ export default function Inventory() {
     setCurrentItem(item);
 
     if (modalType === "update" && item) {
-      setAddProducts({ Name: item.name, sku: item.sku, price: item.price });
+      setAddProducts({
+        Name: item.name,
+        sku: item.sku,
+        price: item.price,
+        quantity: item.quantity, // Set quantity for update
+      });
     } else if (modalType === "add") {
-      setAddProducts({ Name: "", sku: "", price: "" });
+      setAddProducts({ Name: "", sku: "", price: "", quantity: "" }); // Reset form fields
     }
   };
 
@@ -154,6 +166,12 @@ export default function Inventory() {
                       </th>
                       <th
                         scope="col"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
+                      >
+                        Quantity
+                      </th>
+                      <th
+                        scope="col"
                         className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize rounded-t-xl"
                       >
                         Actions
@@ -177,6 +195,9 @@ export default function Inventory() {
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           {product.price}
+                        </td>
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                          {product.quantity}
                         </td>
                         <td className="p-5">
                           <div className="flex items-center gap-3">
@@ -234,7 +255,7 @@ export default function Inventory() {
               </button>
               <button
                 onClick={handleDeleteProduct}
-                className="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-4 py-2"
+                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg"
               >
                 Delete
               </button>
@@ -246,18 +267,8 @@ export default function Inventory() {
       {modals.add && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
-            <div className="flex justify-between items-center">
-              <h5 className="text-lg font-semibold">Add Product</h5>
-              <button
-                type="button"
-                className="text-gray-500 hover:text-gray-700"
-                onClick={() => toggleModal("add")}
-              >
-                <i className="fa-solid fa-xmark"></i>
-              </button>
-            </div>
             <form onSubmit={addUsers}>
-              <div className="mt-4">
+              <div>
                 <label htmlFor="name" className="block text-sm font-medium">
                   Name
                 </label>
@@ -290,7 +301,7 @@ export default function Inventory() {
                   Price
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   id="price"
                   value={product.price}
                   onChange={(e) =>
@@ -299,7 +310,21 @@ export default function Inventory() {
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
               </div>
-              <div className="mt-4 flex justify-end">
+              <div className="mt-4">
+                <label htmlFor="quantity" className="block text-sm font-medium">
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  value={product.quantity}
+                  onChange={(e) =>
+                    setAddProducts({ ...product, quantity: e.target.value })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mt-6 flex justify-end">
                 <button
                   type="button"
                   onClick={() => toggleModal("add")}
@@ -309,9 +334,9 @@ export default function Inventory() {
                 </button>
                 <button
                   type="submit"
-                  className="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm px-4 py-2"
+                  className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg"
                 >
-                  Add
+                  Add Product
                 </button>
               </div>
             </form>
@@ -322,18 +347,8 @@ export default function Inventory() {
       {modals.update && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
-            <div className="flex justify-between items-center">
-              <h5 className="text-lg font-semibold">Update Product</h5>
-              <button
-                type="button"
-                onClick={() => toggleModal("update")}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <i className="fa-solid fa-xmark"></i>
-              </button>
-            </div>
             <form onSubmit={updateUsers}>
-              <div className="mt-4">
+              <div>
                 <label htmlFor="name" className="block text-sm font-medium">
                   Name
                 </label>
@@ -366,7 +381,7 @@ export default function Inventory() {
                   Price
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   id="price"
                   value={product.price}
                   onChange={(e) =>
@@ -375,7 +390,21 @@ export default function Inventory() {
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
               </div>
-              <div className="mt-4 flex justify-end">
+              <div className="mt-4">
+                <label htmlFor="quantity" className="block text-sm font-medium">
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  value={product.quantity}
+                  onChange={(e) =>
+                    setAddProducts({ ...product, quantity: e.target.value })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mt-6 flex justify-end">
                 <button
                   type="button"
                   onClick={() => toggleModal("update")}
@@ -385,9 +414,9 @@ export default function Inventory() {
                 </button>
                 <button
                   type="submit"
-                  className="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm px-4 py-2"
+                  className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg"
                 >
-                  Update
+                  Update Product
                 </button>
               </div>
             </form>

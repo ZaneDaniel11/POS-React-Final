@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "iBVs+wyz/DRM6L16lXrgrJWWAwzlNGqXlB6Tni5M+SHIILdj9a+QCeVtyxBf0O6yQV9EBWbUTw018e5SJnF5VQ==",
+  "dgSpecHash": "/85GDfcKBSfW+DWlkMIH5f6JcydN9RXrDUy4xCYAryR7vz8wfWtgs7Uh/+PEJJq4tWxHvwg1OpEnYvqxMbkYGg==",
   "success": true,
-  "projectFilePath": "D:\\Myprojects\\POS-React-Final\\Daper-api\\Daper-api.csproj",
+  "projectFilePath": "D:\\Myprojects\\POS-React-Final\\daper-api\\Daper-api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.data.sqlite\\8.0.7\\microsoft.data.sqlite.8.0.7.nupkg.sha512",
