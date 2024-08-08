@@ -8,9 +8,43 @@ export default function Inventory() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modals, setModals] = useState({
+    add: false,
+    update: false,
+    delete: false,
+  });
+  const [product, setAddProducts] = useState({ Name: "", sku: "", price: "" });
 
   const API_URL = "http://localhost:5211/api/ProductApi";
+
+  async function addUsers(e) {
+    e.preventDefault();
+    await fetchData(`${API_URL}/SaveProduct`, "POST", {
+      id: 0,
+      name: product.Name,
+      sku: product.sku,
+      price: product.price,
+    });
+    toggleModal("add");
+    getProducts();
+  }
+
+  async function updateUsers(e) {
+    e.preventDefault();
+    try {
+      await fetchData(`${API_URL}/UpdateProduct?Id=${currentItem.id}`, "PUT", {
+        id: currentItem.id,
+        name: product.Name,
+        sku: product.sku,
+        price: product.price,
+      });
+      getProducts();
+      toggleModal("update");
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      alert("Failed to update user. Please try again.");
+    }
+  }
 
   const getProducts = async () => {
     setLoading(true);
@@ -33,7 +67,7 @@ export default function Inventory() {
         );
         console.log("Delete response:", response);
         getProducts();
-        toggleModal(); // Close the modal after deleting the product
+        toggleModal("delete"); // Close the modal after deleting the product
       } catch (error) {
         console.error("Failed to delete product:", error);
         alert(`Failed to delete product. Error: ${error.message}`);
@@ -44,9 +78,18 @@ export default function Inventory() {
     }
   };
 
-  const toggleModal = (item = null) => {
-    setIsModalOpen(!isModalOpen);
+  const toggleModal = (modalType, item = null) => {
+    setModals((prevModals) => ({
+      ...prevModals,
+      [modalType]: !prevModals[modalType],
+    }));
     setCurrentItem(item);
+
+    if (modalType === "update" && item) {
+      setAddProducts({ Name: item.name, sku: item.sku, price: item.price });
+    } else if (modalType === "add") {
+      setAddProducts({ Name: "", sku: "", price: "" });
+    }
   };
 
   useEffect(() => {
@@ -76,6 +119,7 @@ export default function Inventory() {
                 <button
                   className="flex items-center justify-center py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md hover:shadow-lg focus:opacity-[0.85] active:opacity-[0.85]"
                   type="button"
+                  onClick={() => toggleModal("add")}
                 >
                   <FaPlus className="mr-2" /> Add
                 </button>
@@ -136,12 +180,15 @@ export default function Inventory() {
                         </td>
                         <td className="p-5">
                           <div className="flex items-center gap-3">
-                            <button className="p-2 rounded-full group transition-all duration-500 flex items-center">
+                            <button
+                              className="p-2 rounded-full group transition-all duration-500 flex items-center"
+                              onClick={() => toggleModal("update", product)}
+                            >
                               <FaEdit className="text-indigo-500 group-hover:text-indigo-600" />
                             </button>
                             <button
                               className="p-2 rounded-full group transition-all duration-500 flex items-center"
-                              onClick={() => toggleModal(product)}
+                              onClick={() => toggleModal("delete", product)}
                             >
                               <FaTrash className="text-red-500 group-hover:text-red-600" />
                             </button>
@@ -162,14 +209,14 @@ export default function Inventory() {
         </div>
       )}
 
-      {isModalOpen && (
+      {modals.delete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
             <div className="flex justify-between items-center">
               <h5 className="text-lg font-semibold">Delete Confirmation</h5>
               <button
                 type="button"
-                onClick={toggleModal}
+                onClick={() => toggleModal("delete")}
                 className="text-gray-500 hover:text-gray-700"
               >
                 <i className="fa-solid fa-xmark"></i>
@@ -180,7 +227,7 @@ export default function Inventory() {
             </p>
             <div className="flex justify-end mt-4">
               <button
-                onClick={toggleModal}
+                onClick={() => toggleModal("delete")}
                 className="text-gray-500 hover:text-gray-700 mr-4"
               >
                 Cancel
@@ -192,6 +239,158 @@ export default function Inventory() {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {modals.add && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
+            <div className="flex justify-between items-center">
+              <h5 className="text-lg font-semibold">Add Product</h5>
+              <button
+                type="button"
+                className="text-gray-500 hover:text-gray-700"
+                onClick={() => toggleModal("add")}
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <form onSubmit={addUsers}>
+              <div className="mt-4">
+                <label htmlFor="name" className="block text-sm font-medium">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={product.Name}
+                  onChange={(e) =>
+                    setAddProducts({ ...product, Name: e.target.value })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mt-4">
+                <label htmlFor="sku" className="block text-sm font-medium">
+                  SKU
+                </label>
+                <input
+                  type="text"
+                  id="sku"
+                  value={product.sku}
+                  onChange={(e) =>
+                    setAddProducts({ ...product, sku: e.target.value })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mt-4">
+                <label htmlFor="price" className="block text-sm font-medium">
+                  Price
+                </label>
+                <input
+                  type="text"
+                  id="price"
+                  value={product.price}
+                  onChange={(e) =>
+                    setAddProducts({ ...product, price: e.target.value })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mt-4 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => toggleModal("add")}
+                  className="text-gray-500 hover:text-gray-700 mr-4"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm px-4 py-2"
+                >
+                  Add
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {modals.update && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
+            <div className="flex justify-between items-center">
+              <h5 className="text-lg font-semibold">Update Product</h5>
+              <button
+                type="button"
+                onClick={() => toggleModal("update")}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <form onSubmit={updateUsers}>
+              <div className="mt-4">
+                <label htmlFor="name" className="block text-sm font-medium">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={product.Name}
+                  onChange={(e) =>
+                    setAddProducts({ ...product, Name: e.target.value })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mt-4">
+                <label htmlFor="sku" className="block text-sm font-medium">
+                  SKU
+                </label>
+                <input
+                  type="text"
+                  id="sku"
+                  value={product.sku}
+                  onChange={(e) =>
+                    setAddProducts({ ...product, sku: e.target.value })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mt-4">
+                <label htmlFor="price" className="block text-sm font-medium">
+                  Price
+                </label>
+                <input
+                  type="text"
+                  id="price"
+                  value={product.price}
+                  onChange={(e) =>
+                    setAddProducts({ ...product, price: e.target.value })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mt-4 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => toggleModal("update")}
+                  className="text-gray-500 hover:text-gray-700 mr-4"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm px-4 py-2"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
