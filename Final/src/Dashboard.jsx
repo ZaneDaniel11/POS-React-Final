@@ -10,6 +10,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  
   const API_URL = "http://localhost:5211/api/ProductApi";
   const ORDER_API_URL = "http://localhost:5211/api/Order";
 
@@ -153,7 +154,6 @@ export default function Dashboard() {
                    product = {product}
                    decrementQuantity = {()=>decrementQuantity(product.id)}
                    incrementQuantity = {()=>incrementQuantity(product.id)}
-                   
                    />
                   ))}
                 </ul>
