@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gVRC0FCGoWA=",
+  "dgSpecHash": "YV6ZOZf/PHY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\FOR CLONE\\Documents\\GitHub\\POS-React-Final\\Daper-api\\Daper-api.csproj",
+  "projectFilePath": "C:\\Users\\FOR CLONE\\Documents\\GitHub\\POS-React-Final\\daper-api\\Daper-api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\FOR CLONE\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\FOR CLONE\\.nuget\\packages\\microsoft.data.sqlite\\8.0.7\\microsoft.data.sqlite.8.0.7.nupkg.sha512",

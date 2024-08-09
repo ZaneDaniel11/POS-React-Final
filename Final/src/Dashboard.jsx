@@ -184,7 +184,7 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Main Content */}
+     
           <div className="w-3/4 bg-white p-6 rounded-lg shadow">
             <h1 className="text-2xl font-bold mb-4">Products</h1>
             <input
