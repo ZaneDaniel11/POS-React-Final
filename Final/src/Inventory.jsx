@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; 
 import Header from "./Header/Header";
 import { fetchData } from "./utilities/ApiUti";
+import UpdateModal from "./Components/Inventory/Modals/UpdateModal";
+import DeleteModal from "./Components/Inventory/Modals/DeleteModal";
+import AddModal from "./Components/Inventory/Modals/AddModal";
 
 export default function Inventory() {
   const [products, setProducts] = useState([]);
@@ -229,42 +232,21 @@ export default function Inventory() {
           <div className="loader" />
         </div>
       )}
+      <DeleteModal
+      isOpen={modals.delete}
+      toggleModal ={() => toggleModal("delete")}
+      handleDeleteProduct = {handleDeleteProduct}
+      />
 
-      {modals.delete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
-            <div className="flex justify-between items-center">
-              <h5 className="text-lg font-semibold">Delete Confirmation</h5>
-              <button
-                type="button"
-                onClick={() => toggleModal("delete")}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <i className="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-            <p className="mt-4">
-              Are you sure you want to delete this product?
-            </p>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => toggleModal("delete")}
-                className="text-gray-500 hover:text-gray-700 mr-4"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteProduct}
-                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AddModal
+      isOpen = {modals.add}
+      addUsers ={addUsers}
+      setAddProducts ={setAddProducts}
+      product={product}
+      toggleModal={() => toggleModal("add")}
+      />
 
-      {modals.add && (
+      {/* {modals.add && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
             <form onSubmit={addUsers}>
@@ -342,87 +324,15 @@ export default function Inventory() {
             </form>
           </div>
         </div>
-      )}
+      )} */}
 
-      {modals.update && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
-            <form onSubmit={updateUsers}>
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={product.Name}
-                  onChange={(e) =>
-                    setAddProducts({ ...product, Name: e.target.value })
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-              <div className="mt-4">
-                <label htmlFor="sku" className="block text-sm font-medium">
-                  SKU
-                </label>
-                <input
-                  type="text"
-                  id="sku"
-                  value={product.sku}
-                  onChange={(e) =>
-                    setAddProducts({ ...product, sku: e.target.value })
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-              <div className="mt-4">
-                <label htmlFor="price" className="block text-sm font-medium">
-                  Price
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  value={product.price}
-                  onChange={(e) =>
-                    setAddProducts({ ...product, price: e.target.value })
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-              <div className="mt-4">
-                <label htmlFor="quantity" className="block text-sm font-medium">
-                  Quantity
-                </label>
-                <input
-                  type="number"
-                  id="quantity"
-                  value={product.quantity}
-                  onChange={(e) =>
-                    setAddProducts({ ...product, quantity: e.target.value })
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-              <div className="mt-6 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => toggleModal("update")}
-                  className="text-gray-500 hover:text-gray-700 mr-4"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg"
-                >
-                  Update Product
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+<UpdateModal
+isOpen={modals.update}
+toggleModal ={() => toggleModal("update")}
+updateUsers ={updateUsers}
+setAddProducts ={setAddProducts}
+product ={product}
+/>
     </>
   );
 }
