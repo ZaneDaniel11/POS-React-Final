@@ -17,7 +17,7 @@ export default function Inventory() {
     Name: "",
     sku: "",
     price: "",
-    quantity: "", // Added quantity field
+    quantity: "", 
   });
 
   const API_URL = "http://localhost:5211/api/ProductApi";
@@ -29,7 +29,7 @@ export default function Inventory() {
       name: product.Name,
       sku: product.sku,
       price: product.price,
-      quantity: product.quantity, // Added quantity field
+      quantity: product.quantity, 
     });
     toggleModal("add");
     getProducts();
@@ -43,7 +43,7 @@ export default function Inventory() {
         name: product.Name,
         sku: product.sku,
         price: product.price,
-        quantity: product.quantity, // Added quantity field
+        quantity: product.quantity, 
       });
       getProducts();
       toggleModal("update");

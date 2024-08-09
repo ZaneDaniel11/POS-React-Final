@@ -8,9 +8,8 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [quantities, setQuantities] = useState({}); // State for managing input quantities
   const API_URL = "http://localhost:5211/api/ProductApi";
-  const ORDER_API_URL = "http://localhost:5211/api/Order/";
+  const ORDER_API_URL = "http://localhost:5211/api/Order";
 
   const getProducts = async () => {
     setLoading(true);
@@ -33,7 +32,7 @@ export default function Dashboard() {
   );
 
   const addToSelectedProducts = (product) => {
-    if (product.quantity <= 0) return; // Prevent adding products with 0 quantity
+    if (product.quantity <= 0) return;
 
     setSelectedProducts((prevSelected) => {
       const existingProduct = prevSelected.find((p) => p.id === product.id);
@@ -123,7 +122,9 @@ export default function Dashboard() {
         throw new Error("Failed to submit order.");
       }
 
-      // Clear the selected products after successful checkout
+      const data = await response.json();
+      console.log("Order ID:", data.OrderId);
+
       setSelectedProducts([]);
       alert("Order placed successfully!");
     } catch (error) {
@@ -183,91 +184,40 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Product Table */}
-          <div className="flex flex-col w-3/4">
-            <div className="overflow-x-auto">
-              <div className="min-w-full inline-block align-middle">
-                <div className="relative text-gray-500 focus-within:text-gray-900 mb-4 flex justify-between">
-                  <input
-                    type="text"
-                    id="default-search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="block w-80 h-11 pr-5 pl-12 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none"
-                    placeholder="Search for Name"
-                  />
-                </div>
-                <div className="overflow-hidden">
-                  <table className="min-w-full rounded-xl">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th
-                          scope="col"
-                          className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-                        >
-                          Name
-                        </th>
-                        <th
-                          scope="col"
-                          className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-                        >
-                          SKU
-                        </th>
-                        <th
-                          scope="col"
-                          className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-                        >
-                          Price
-                        </th>
-                        <th
-                          scope="col"
-                          className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-                        >
-                          Quantity
-                        </th>
-                        <th
-                          scope="col"
-                          className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize rounded-t-xl"
-                        >
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-300">
-                      {filteredProducts.map((product) => (
-                        <tr
-                          key={product.id}
-                          className="bg-white transition-all duration-500 hover:bg-gray-50"
-                        >
-                          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                            {product.name}
-                          </td>
-                          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                            {product.sku}
-                          </td>
-                          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                            {product.price}
-                          </td>
-                          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                            {product.quantity}
-                          </td>
-                          <td className="p-5">
-                            <div className="flex items-center gap-3">
-                              <button
-                                onClick={() => addToSelectedProducts(product)}
-                                className="p-2 bg-blue-500 text-white rounded-lg"
-                              >
-                                Add to Cart
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+          {/* Main Content */}
+          <div className="w-3/4 bg-white p-6 rounded-lg shadow">
+            <h1 className="text-2xl font-bold mb-4">Products</h1>
+            <input
+              type="text"
+              className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {loading ? (
+              <p>Loading...</p>
+            ) : filteredProducts.length === 0 ? (
+              <p>No products found</p>
+            ) : (
+              <div className="grid grid-cols-3 gap-4">
+                {filteredProducts.map((product) => (
+                  <div
+                    key={product.id}
+                    className="p-4 bg-gray-100 rounded-lg shadow"
+                  >
+                    <h2 className="text-lg font-bold">{product.name}</h2>
+                    <p>Price: ${product.price}</p>
+                    <p>Stock: {product.quantity}</p>
+                    <button
+                      className="mt-4 w-full bg-blue-500 text-white p-2 rounded-lg"
+                      onClick={() => addToSelectedProducts(product)}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
