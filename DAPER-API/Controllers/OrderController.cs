@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Dapper;
 using Microsoft.Data.Sqlite;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
+
 
 namespace Daper_api.Controllers
 {
@@ -26,18 +24,35 @@ namespace Daper_api.Controllers
             {
                 await connection.OpenAsync();
 
-                // Insert the order
-                const string insertOrderQuery = "INSERT INTO Order_tb (OrderDate, TotalAmount) VALUES (@OrderDate, @TotalAmount); SELECT last_insert_rowid();";
-                var orderId = await connection.ExecuteScalarAsync<int>(insertOrderQuery, new { OrderDate = orderDate, TotalAmount = totalAmount });
-
-                // Insert the order history
-                const string insertHistoryQuery = "INSERT INTO History_tb (OrderId, ProductName, Quantity, Price) VALUES (@OrderId, @ProductName, @Quantity, @Price)";
-                foreach (var product in selectedProducts)
+                using (var transaction = connection.BeginTransaction())
                 {
-                    await connection.ExecuteAsync(insertHistoryQuery, new { OrderId = orderId, ProductName = product.Name, Quantity = product.Quantity, Price = product.Price });
-                }
+                    try
+                    {
+                       
+                        const string insertOrderQuery = "INSERT INTO Order_tb (OrderDate, TotalAmount) VALUES (@OrderDate, @TotalAmount); SELECT last_insert_rowid();";
+                        var orderId = await connection.ExecuteScalarAsync<int>(insertOrderQuery, new { OrderDate = orderDate, TotalAmount = totalAmount }, transaction);
 
-                return Ok(new { OrderId = orderId });
+                        const string insertHistoryQuery = "INSERT INTO History_tb (OrderId, ProductName, Quantity, Price) VALUES (@OrderId, @ProductName, @Quantity, @Price)";
+                        const string updateProductQuantityQuery = "UPDATE Product_tb SET Quantity = Quantity - @Quantity WHERE Name = @ProductName";
+
+                        foreach (var product in selectedProducts)
+                        {
+                           
+                            await connection.ExecuteAsync(insertHistoryQuery, new { OrderId = orderId, ProductName = product.Name, Quantity = product.Quantity, Price = product.Price }, transaction);
+
+                           
+                            await connection.ExecuteAsync(updateProductQuantityQuery, new { ProductName = product.Name, Quantity = product.Quantity }, transaction);
+                        }
+
+                        transaction.Commit();
+                        return Ok(new { OrderId = orderId });
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return StatusCode (500, $"Internal server error:{ex.Message}");
+                    }
+                }
             }
         }
 
@@ -63,7 +78,6 @@ namespace Daper_api.Controllers
             }
         }
 
-    
         [HttpGet("AllHistory")]
         public async Task<IActionResult> GetAllHistory()
         {

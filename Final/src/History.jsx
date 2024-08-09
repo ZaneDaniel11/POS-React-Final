@@ -1,11 +1,12 @@
 import Header from "./Header/Header";
 import { fetchData } from "./utilities/ApiUti";
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaTrash, FaEye } from "react-icons/fa"; 
+import { FaEye } from "react-icons/fa"; 
 
 export default function Historys() {
   const [historys, setHistory] = useState([]);
-  const [selectedOrderDetails, setSelectedOrderDetails] = useState(null); 
+  const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const API_URL = "http://localhost:5211/api/Order";
 
   const getHistory = async () => {
@@ -13,17 +14,23 @@ export default function Historys() {
       const result = await fetchData(`${API_URL}/AllHistory`, "GET");
       setHistory(result);
     } catch (error) {
-      console.error("Failed to fetch history:", error);
+      console.error("Error sa History", error);
     }
   };
 
   const viewOrder = async (orderId) => {
     try {
       const result = await fetchData(`${API_URL}/ViewOrder/${orderId}`, "GET");
-      setSelectedOrderDetails(result); 
+      setSelectedOrderDetails(result);
+      setIsModalOpen(true); 
     } catch (error) {
-      console.error("Failed to fetch order details:", error);
+      console.error("Error sa Order", error);
     }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrderDetails(null);
   };
 
   useEffect(() => {
@@ -91,12 +98,6 @@ export default function Historys() {
                             >
                               <FaEye className="text-blue-500 group-hover:text-blue-600" />
                             </button>
-                            <button
-                              className="p-2 rounded-full group transition-all duration-500 flex items-center"
-                              onClick={() => toggleModal("update", history)}
-                            >
-                              <FaEdit className="text-indigo-500 group-hover:text-indigo-600" />
-                            </button>
                           </div>
                         </td>
                       </tr>
@@ -109,28 +110,45 @@ export default function Historys() {
         </div>
       </div>
 
-      
-      {selectedOrderDetails && (
-        <div className="mt-8">
-          <h3 className="text-xl font-semibold text-gray-900">Order Details</h3>
-          <table className="min-w-full mt-4">
-            <thead>
-              <tr>
-                <th className="p-5 text-left text-sm leading-6 font-semibold text-gray-900">Product Name</th>
-                <th className="p-5 text-left text-sm leading-6 font-semibold text-gray-900">Quantity</th>
-                <th className="p-5 text-left text-sm leading-6 font-semibold text-gray-900">Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedOrderDetails.map((item, index) => (
-                <tr key={index}>
-                  <td className="p-5 text-sm leading-6 font-medium text-gray-900">{item.ProductName}</td>
-                  <td className="p-5 text-sm leading-6 font-medium text-gray-900">{item.Quantity}</td>
-                  <td className="p-5 text-sm leading-6 font-medium text-gray-900">${item.Price}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+=
+      {isModalOpen && selectedOrderDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg w-3/4 md:w-1/2">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h3 className="text-xl font-semibold text-gray-900">Order Details</h3>
+              <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
+                &times;
+              </button>
+            </div>
+            <div className="p-4">
+              <table className="min-w-full">
+                <thead>
+                  <tr>
+                    <th className="p-5 text-left text-sm leading-6 font-semibold text-gray-900">Product Name</th>
+                    <th className="p-5 text-left text-sm leading-6 font-semibold text-gray-900">Quantity</th>
+                    <th className="p-5 text-left text-sm leading-6 font-semibold text-gray-900">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedOrderDetails.map((item, index) => (
+                    <tr key={index}>
+                      <td className="p-5 text-sm leading-6 font-medium text-gray-900">{item.ProductName}</td>
+                      <td className="p-5 text-sm leading-6 font-medium text-gray-900">{item.Quantity}</td>
+                      <td className="p-5 text-sm leading-6 font-medium text-gray-900">${item.Price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="p-4 border-t">
+              <button
+                onClick={closeModal}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>

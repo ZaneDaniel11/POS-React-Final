@@ -12,7 +12,6 @@ namespace Dapper.Controllers
     {
         private readonly SqliteConnection _connection = new SqliteConnection("Data Source=Final-pos.db");
 
-        // Get all products
         [HttpGet("GetProducts")]
         public async Task<IActionResult> GetProducts()
         {
@@ -25,7 +24,7 @@ namespace Dapper.Controllers
             return Ok(result);
         }
 
-        // Save a new product
+     
         [HttpPost("SaveProduct")]
         public async Task<IActionResult> SaveProductAsync(Product product)
         {
@@ -39,7 +38,7 @@ namespace Dapper.Controllers
             return Ok(result);
         }
 
-        // Update an existing product
+
         [HttpPut("UpdateProduct")]
         public async Task<IActionResult> UpdateProductAsync(int id, Product product)
         {
@@ -61,7 +60,6 @@ namespace Dapper.Controllers
             return Ok(result);
         }
 
-        // Delete a product
         [HttpDelete("DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

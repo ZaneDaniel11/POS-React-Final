@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; // Importing icons from react-icons
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; 
 import Header from "./Header/Header";
 import { fetchData } from "./utilities/ApiUti";
 
@@ -97,10 +97,10 @@ export default function Inventory() {
         Name: item.name,
         sku: item.sku,
         price: item.price,
-        quantity: item.quantity, // Set quantity for update
+        quantity: item.quantity, 
       });
     } else if (modalType === "add") {
-      setAddProducts({ Name: "", sku: "", price: "", quantity: "" }); // Reset form fields
+      setAddProducts({ Name: "", sku: "", price: "", quantity: "" }); 
     }
   };
 
