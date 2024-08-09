@@ -2,6 +2,8 @@ import Header from "./Header/Header";
 import React, { useState, useEffect } from "react";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { fetchData } from "./utilities/ApiUti";
+import FilterTable from "./Components/Dashboard/Table/FilterTable";
+import Products from "./Components/Dashboard/Table/Products";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
@@ -138,7 +140,7 @@ export default function Dashboard() {
       <Header />
       <div className="flex justify-center items-center mt-16">
         <div className="flex flex-row w-4/5">
-          {/* Sidebar */}
+     
           <div className="w-1/4 bg-gray-100 p-4 rounded-lg mr-4">
             <h2 className="text-lg font-bold mb-4">Selected Products</h2>
             {selectedProducts.length === 0 ? (
@@ -147,28 +149,12 @@ export default function Dashboard() {
               <>
                 <ul>
                   {selectedProducts.map((product) => (
-                    <li
-                      key={product.id}
-                      className="p-2 bg-white mb-2 rounded-lg shadow flex justify-between items-center"
-                    >
-                      <span>
-                        {product.name} - {product.price} x {product.quantity}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => decrementQuantity(product.id)}
-                          className="p-1 bg-gray-300 rounded-full"
-                        >
-                          <FaMinus />
-                        </button>
-                        <button
-                          onClick={() => incrementQuantity(product.id)}
-                          className="p-1 bg-gray-300 rounded-full"
-                        >
-                          <FaPlus />
-                        </button>
-                      </div>
-                    </li>
+                   <Products
+                   product = {product}
+                   decrementQuantity = {()=>decrementQuantity(product.id)}
+                   incrementQuantity = {()=>incrementQuantity(product.id)}
+                   
+                   />
                   ))}
                 </ul>
                 <div className="mt-4 font-bold">
@@ -201,20 +187,12 @@ export default function Dashboard() {
             ) : (
               <div className="grid grid-cols-3 gap-4">
                 {filteredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className="p-4 bg-gray-100 rounded-lg shadow"
-                  >
-                    <h2 className="text-lg font-bold">{product.name}</h2>
-                    <p>Price: ${product.price}</p>
-                    <p>Stock: {product.quantity}</p>
-                    <button
-                      className="mt-4 w-full bg-blue-500 text-white p-2 rounded-lg"
-                      onClick={() => addToSelectedProducts(product)}
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
+
+                 <FilterTable
+                 product={product}
+                 addToSelectedProducts={()=>addToSelectedProducts(product)}
+                 />
+
                 ))}
               </div>
             )}
