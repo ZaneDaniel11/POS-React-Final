@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaPlus} from "react-icons/fa"; 
+import { FaPlus } from "react-icons/fa";
 import Header from "./Header/Header";
 import { fetchData } from "./utilities/ApiUti";
 import UpdateModal from "./Components/Inventory/Modals/UpdateModal";
@@ -21,7 +21,7 @@ export default function Inventory() {
     Name: "",
     sku: "",
     price: "",
-    quantity: "", 
+    quantity: "",
   });
 
   const API_URL = "http://localhost:5211/api/ProductApi";
@@ -33,7 +33,7 @@ export default function Inventory() {
       name: product.Name,
       sku: product.sku,
       price: product.price,
-      quantity: product.quantity, 
+      quantity: product.quantity,
     });
     toggleModal("add");
     getProducts();
@@ -47,7 +47,7 @@ export default function Inventory() {
         name: product.Name,
         sku: product.sku,
         price: product.price,
-        quantity: product.quantity, 
+        quantity: product.quantity,
       });
       getProducts();
       toggleModal("update");
@@ -101,10 +101,10 @@ export default function Inventory() {
         Name: item.name,
         sku: item.sku,
         price: item.price,
-        quantity: item.quantity, 
+        quantity: item.quantity,
       });
     } else if (modalType === "add") {
-      setAddProducts({ Name: "", sku: "", price: "", quantity: "" }); 
+      setAddProducts({ Name: "", sku: "", price: "", quantity: "" });
     }
   };
 
@@ -184,11 +184,12 @@ export default function Inventory() {
                   </thead>
                   <tbody className="divide-y divide-gray-300">
                     {filteredProducts.map((product) => (
-                        <TableRow
-                        product ={product}
-                        UpdateModal={() => toggleModal("update")}
-                        DeleteModal={() => toggleModal("delete")}
-                        />
+                      <TableRow
+                        key={product.id} // Ensure unique key
+                        product={product}
+                        UpdateModal={() => toggleModal("update", product)}
+                        DeleteModal={() => toggleModal("delete", product)}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -203,25 +204,25 @@ export default function Inventory() {
         </div>
       )}
       <DeleteModal
-      isOpen={modals.delete}
-      toggleModal ={() => toggleModal("delete")}
-      handleDeleteProduct = {handleDeleteProduct}
+        isOpen={modals.delete}
+        toggleModal={() => toggleModal("delete")}
+        handleDeleteProduct={handleDeleteProduct}
       />
 
       <AddModal
-      isOpen = {modals.add}
-      addUsers ={addUsers}
-      setAddProducts ={setAddProducts}
-      product={product}
-      toggleModal={() => toggleModal("add")}
+        isOpen={modals.add}
+        addUsers={addUsers}
+        setAddProducts={setAddProducts}
+        product={product}
+        toggleModal={() => toggleModal("add")}
       />
-      
+
       <UpdateModal
-      isOpen={modals.update}
-      toggleModal ={() => toggleModal("update")}
-      updateUsers ={updateUsers}
-      setAddProducts ={setAddProducts}
-      product ={product}
+        isOpen={modals.update}
+        toggleModal={() => toggleModal("update")}
+        updateUsers={updateUsers}
+        setAddProducts={setAddProducts}
+        product={product}
       />
     </>
   );

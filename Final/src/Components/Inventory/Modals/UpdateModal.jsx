@@ -1,7 +1,13 @@
 import React from "react";
 
-export default function UpdateModal({ isOpen, toggleModal, updateUsers, setAddProducts, product }) {
-  if (!isOpen) return null; 
+export default function UpdateModal({
+  isOpen,
+  toggleModal,
+  updateUsers,
+  setAddProducts,
+  product,
+}) {
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 md:mx-0">
@@ -39,7 +45,7 @@ export default function UpdateModal({ isOpen, toggleModal, updateUsers, setAddPr
               Price
             </label>
             <input
-              type="number"
+              type="text"
               id="price"
               value={product.price}
               onChange={(e) =>
@@ -53,7 +59,7 @@ export default function UpdateModal({ isOpen, toggleModal, updateUsers, setAddPr
               Quantity
             </label>
             <input
-              type="number"
+              type="text"
               id="quantity"
               value={product.quantity}
               onChange={(e) =>
@@ -66,15 +72,15 @@ export default function UpdateModal({ isOpen, toggleModal, updateUsers, setAddPr
             <button
               type="button"
               onClick={toggleModal}
-              className="text-gray-500 hover:text-gray-700 mr-4"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
             >
-              Update Product
+              Update
             </button>
           </div>
         </form>

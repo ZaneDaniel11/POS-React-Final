@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
-  
+
   const API_URL = "http://localhost:5211/api/ProductApi";
   const ORDER_API_URL = "http://localhost:5211/api/Order";
 
@@ -141,7 +141,6 @@ export default function Dashboard() {
       <Header />
       <div className="flex justify-center items-center mt-16">
         <div className="flex flex-row w-4/5">
-     
           <div className="w-1/4 bg-gray-100 p-4 rounded-lg mr-4">
             <h2 className="text-lg font-bold mb-4">Selected Products</h2>
             {selectedProducts.length === 0 ? (
@@ -150,11 +149,11 @@ export default function Dashboard() {
               <>
                 <ul>
                   {selectedProducts.map((product) => (
-                   <Products
-                   product = {product}
-                   decrementQuantity = {()=>decrementQuantity(product.id)}
-                   incrementQuantity = {()=>incrementQuantity(product.id)}
-                   />
+                    <Products
+                      product={product}
+                      decrementQuantity={() => decrementQuantity(product.id)}
+                      incrementQuantity={() => incrementQuantity(product.id)}
+                    />
                   ))}
                 </ul>
                 <div className="mt-4 font-bold">
@@ -170,7 +169,6 @@ export default function Dashboard() {
             )}
           </div>
 
-     
           <div className="w-3/4 bg-white p-6 rounded-lg shadow">
             <h1 className="text-2xl font-bold mb-4">Products</h1>
             <input
@@ -187,12 +185,10 @@ export default function Dashboard() {
             ) : (
               <div className="grid grid-cols-3 gap-4">
                 {filteredProducts.map((product) => (
-
-                 <FilterTable
-                 product={product}
-                 addToSelectedProducts={()=>addToSelectedProducts(product)}
-                 />
-
+                  <FilterTable
+                    product={product}
+                    addToSelectedProducts={() => addToSelectedProducts(product)}
+                  />
                 ))}
               </div>
             )}
