@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Myprojects\\POS-React-Final\\DAPER-API\\Daper-api.csproj": {}
+    "D:\\Myprojects\\POS-React-Final\\daper-api\\Daper-api.csproj": {}
   },
   "projects": {
-    "D:\\Myprojects\\POS-React-Final\\DAPER-API\\Daper-api.csproj": {
+    "D:\\Myprojects\\POS-React-Final\\daper-api\\Daper-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Myprojects\\POS-React-Final\\DAPER-API\\Daper-api.csproj",
+        "projectUniqueName": "D:\\Myprojects\\POS-React-Final\\daper-api\\Daper-api.csproj",
         "projectName": "Daper-api",
-        "projectPath": "D:\\Myprojects\\POS-React-Final\\DAPER-API\\Daper-api.csproj",
+        "projectPath": "D:\\Myprojects\\POS-React-Final\\daper-api\\Daper-api.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "D:\\Myprojects\\POS-React-Final\\DAPER-API\\obj\\",
+        "outputPath": "D:\\Myprojects\\POS-React-Final\\daper-api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
