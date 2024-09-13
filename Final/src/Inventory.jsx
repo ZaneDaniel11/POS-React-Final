@@ -89,7 +89,7 @@ export default function Inventory() {
     }
   };
 
-  const toggleModal = (modalType, item = null) => {
+  toggleModal = (modalType, item = null) => {
     setModals((prevModals) => ({
       ...prevModals,
       [modalType]: !prevModals[modalType],
